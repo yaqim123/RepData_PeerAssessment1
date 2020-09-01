@@ -6,20 +6,115 @@ output:
 ---
 
 
-## Loading and preprocessing the data
+## 1.0 Loading and preprocessing the data
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# load data
+data <- read.csv(unz("activity.zip", "activity.csv"))
+
+# change date class as Date
+data$date = as.Date(as.character(data$date))
+
+
+```
 
 
 
 ## What is mean total number of steps taken per day?
 
+```{r}
+
+
+data_sum = data %>% group_by(date) %>% summarise(total_number_steps_taken_each_day = sum(steps)) 
+
+data_sum
+
+data_sum %>% ggplot(aes(x= total_number_steps_taken_each_day)) + geom_histogram(binwidth = 2000)
+
+
+summary(data_sum$total_number_steps_taken_each_day)
+
+```
+
+The mean of the total number of steps taken per day is 10766 while the median is 10765
+
 
 
 ## What is the average daily activity pattern?
 
+```{r}
+
+# time series
+
+data %>% mutate(steps = ifelse(is.na(steps),0,steps)) %>% group_by(interval) %>% summarise(average_number_steps_taken_each_day = mean(steps)) %>% ggplot(aes(x=interval,y=average_number_steps_taken_each_day)) + geom_line()
+
+
+# 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps
+
+data2 = data %>% mutate(steps = ifelse(is.na(steps),0,steps)) %>% group_by(interval) %>% summarise(mean_number_steps_taken_each_day = mean(steps))
+
+data2 = data2 %>% arrange(desc(mean_number_steps_taken_each_day))
+
+data2$interval[1]
+
+```
+
+The 835,  5-minute interval on average across all the data in dataset which contains the max number of steps
 
 
 ## Imputing missing values
 
+```{r}
+
+
+# Check missing data
+summary(data)
+
+# Impute missing data by exchanging NA into mean steps
+
+data_no_na = data %>% filter(!is.na(steps))
+
+meansteps = mean(data_no_na$steps)
+
+data3 = data %>%  mutate(steps = ifelse(is.na(steps),meansteps,steps))
+
+# no more na in data
+
+summary(data3)
+
+
+# plot histogram
+
+data3 %>% group_by(date) %>% summarise(total_number_steps_taken_each_day = sum(steps)) %>% ggplot(aes(x= total_number_steps_taken_each_day)) + geom_histogram(binwidth = 2000)
+
+
+# median and mean. no change
+
+summary(data_sum$total_number_steps_taken_each_day)
+
+
+```
+
+The value does not differ before and after we impute the NA values into the data. However the total number of steps taken for each day increases.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+
+data3$days = weekdays(data3$date)
+
+data3 = data3 %>% mutate(days_group = ifelse(days == "Saturday" |days == "Sundays","weekends","weekdays"))
+
+data3$days_group = as.factor(data3$days_group)
+
+data3 %>% group_by(interval,days_group) %>% summarise(average_number_steps_taken_each_day = mean(steps)) %>% ggplot(aes(x=interval,y=average_number_steps_taken_each_day)) + geom_line() + facet_grid(~days_group)
+
+
+```
+
+Yes there are differences between weekends which has more average steps compare to weekdays which have slightly lower average steps
