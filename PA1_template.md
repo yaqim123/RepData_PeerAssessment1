@@ -11,38 +11,8 @@ output:
 
 ```r
 library(ggplot2)
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.5.3
-```
-
-```r
 library(dplyr)
-```
 
-```
-## Warning: package 'dplyr' was built under R version 3.5.3
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 # load data
 data <- read.csv(unz("activity.zip", "activity.csv"))
 
@@ -80,10 +50,6 @@ data_sum
 
 ```r
 data_sum %>% ggplot(aes(x= total_number_steps_taken_each_day)) + geom_histogram(binwidth = 2000)
-```
-
-```
-## Warning: Removed 8 rows containing non-finite values (stat_bin).
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->

@@ -8,7 +8,7 @@ output:
 
 ## 1.0 Loading and preprocessing the data
 
-```{r}
+```{r, message=FALSE,warning=FALSE}
 
 library(ggplot2)
 library(dplyr)
@@ -26,7 +26,7 @@ data$date = as.Date(as.character(data$date))
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+```{r, message=FALSE,warning=FALSE}
 
 
 data_sum = data %>% group_by(date) %>% summarise(total_number_steps_taken_each_day = sum(steps)) 
@@ -46,7 +46,7 @@ The mean of the total number of steps taken per day is 10766 while the median is
 
 ## What is the average daily activity pattern?
 
-```{r}
+```{r, message=FALSE,warning=FALSE}
 
 # time series
 
@@ -68,7 +68,7 @@ The 835,  5-minute interval on average across all the data in dataset which cont
 
 ## Imputing missing values
 
-```{r}
+```{r, message=FALSE,warning=FALSE}
 
 
 # Check missing data
@@ -104,7 +104,7 @@ The value does not differ before and after we impute the NA values into the data
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r}
+```{r, message=FALSE,warning=FALSE}
 
 data3$days = weekdays(data3$date)
 
